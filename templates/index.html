@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debater AI</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .chat-box { width: 50%; margin: auto; border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+        input, button { margin-top: 10px; padding: 10px; width: 80%; }
+        button { width: 15%; }
+        .coming-soon { margin-top: 20px; font-style: italic; color: gray; }
+    </style>
+</head>
+<body>
+    <h1>Debater AI</h1>
+    <p><b>Debate Topic:</b> "2+2 = 4?" (AI argues that 2+2 = 5)</p>
+    
+    <div class="chat-box" id="chat-box"></div>
+    
+    <input type="text" id="user-input" placeholder="Type your argument..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <div class="coming-soon">
+        <p>🔜 Evaluation Feature: Coming Soon! 🏆</p>
+        <p>🔜 More Debate Topics: Coming Soon! 🗣️</p>
+    </div>
+
+    <script>
+        let history = "";
+
+        function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            if (!userInput.trim()) return;
+
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<p><b>You:</b> ${userInput}</p>`;
+            document.getElementById("user-input").value = "";
+
+            fetch("/debate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_input: userInput, history: history })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<p><b>Debater AI:</b> ${data.response}</p>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                history += `User: ${userInput}\nAI: ${data.response}\n`;
+            });
+        }
+    </script>
+</body>
+</html>
