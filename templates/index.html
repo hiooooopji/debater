@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .chat-box { width: 50%; margin: auto; border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
-        input, button { margin-top: 10px; padding: 10px; width: 80%; }
+        input, button, select { margin-top: 10px; padding: 10px; width: 80%; }
         button { width: 15%; }
         .coming-soon { margin-top: 20px; font-style: italic; color: gray; }
         .footer { margin-top: 30px; font-weight: bold; font-size: 1.2em; }
@@ -15,7 +15,11 @@
 </head>
 <body>
     <h1>Debater AI</h1>
-    <p><b>Debate Topic:</b> "2+2 = 4?" (AI argues that 2+2 = 5)</p>
+    <p><b>Choose Debate Topic:</b></p>
+    <select id="topic">
+        <option value="math">2+2=5</option>
+        <option value="free_will">Free Will is an Illusion</option>
+    </select>
     
     <div class="chat-box" id="chat-box"></div>
     
@@ -36,6 +40,7 @@
 
         function sendMessage() {
             const userInput = document.getElementById("user-input").value;
+            const topic = document.getElementById("topic").value;
             if (!userInput.trim()) return;
 
             const chatBox = document.getElementById("chat-box");
@@ -45,7 +50,7 @@
             fetch("/debate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_input: userInput, history: history })
+                body: JSON.stringify({ topic: topic, user_input: userInput, history: history })
             })
             .then(response => response.json())
             .then(data => {
